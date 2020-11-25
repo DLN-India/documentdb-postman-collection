@@ -1,0 +1,60 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: LDH Dev Iteration one
+  description: First Iteration of adding ratings in the cosmos db
+  contact: {}
+host: DefaultParameterValue
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /dbs:
+    get:
+      description: Get Collections	
+      summary: Get Databases
+      tags:
+      - Misc
+      operationId: GetDatabases
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+  /:
+    post:
+      summary: CreateNewDemoRequest
+      tags:
+      - Misc
+      operationId: CreateNewDemoRequest
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+    get:
+      summary: testAuthazure
+      tags:
+      - Misc
+      operationId: testAuthazure
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+tags:
+- name: Misc
+  description: ''
