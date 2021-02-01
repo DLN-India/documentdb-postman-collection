@@ -1,151 +1,60 @@
-{
-  "info": {
-    "_postman_id": "2938261-2603e3d5-23ba-e2d4-954c-628171806712",
-    "name": "LDH Dev Iteration one",
-    "description": "First Iteration of adding ratings in the cosmos db",
-    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Get Databases",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "type": "text/javascript",
-            "exec": [
-              "\"use strict\";\r",
-              "\r",
-              "var crypto = require(\"crypto\");\r",
-              "\r",
-              "var AuthHandler = {\r",
-              "    getAuthorizationHeader: function (documentClient, verb, path, resourceId, resourceType, headers) {\r",
-              "        if (documentClient.masterKey) {\r",
-              "            return encodeURIComponent(this.getAuthorizationTokenUsingMasterKey(verb, resourceId, resourceType, headers, documentClient.masterKey));\r",
-              "        } else if (documentClient.resourceTokens) {\r",
-              "            return encodeURIComponent(this.getAuthorizationTokenUsingResourceTokens(documentClient.resourceTokens, path, resourceId));\r",
-              "        }\r",
-              "    },\r",
-              "\r",
-              "    getAuthorizationTokenUsingMasterKey: function (verb, resourceId, resourceType, headers, masterKey) {\r",
-              "        var key = new Buffer(masterKey, \"base64\");\r",
-              "\r",
-              "        var text = (verb || \"\").toLowerCase() + \"\\n\" +\r",
-              "            (resourceType || \"\").toLowerCase() + \"\\n\" +\r",
-              "            (resourceId || \"\") + \"\\n\" +\r",
-              "            (headers[\"x-ms-date\"] || \"\").toLowerCase() + \"\\n\" +\r",
-              "            (headers[\"date\"] || \"\").toLowerCase() + \"\\n\";\r",
-              "\r",
-              "        var body = new Buffer(text, \"utf8\");\r",
-              "\r",
-              "        var signature = crypto.createHmac(\"sha256\", key).update(body).digest(\"base64\");\r",
-              "\r",
-              "        var MasterToken = \"master\";\r",
-              "\r",
-              "        var TokenVersion = \"1.0\";\r",
-              "\r",
-              "        return \"type=\" + MasterToken + \"&ver=\" + TokenVersion + \"&sig=\" + signature;\r",
-              "    },\r",
-              "\r",
-              "    getAuthorizationTokenUsingResourceTokens: function (resourceTokens, path, resourceId) {\r",
-              "        if (resourceTokens && Object.keys(resourceTokens).length > 0) {\r",
-              "            // For database account access(through getDatabaseAccount API), path and resourceId are \"\", \r",
-              "            // so in this case we return the first token to be used for creating the auth header as the service will accept any token in this case\r",
-              "            if (!path && !resourceId) {\r",
-              "                return resourceTokens[Object.keys(resourceTokens)[0]];\r",
-              "            }\r",
-              "\r",
-              "            if (resourceId && resourceTokens[resourceId]) {\r",
-              "                return resourceTokens[resourceId];\r",
-              "            }\r",
-              "\r",
-              "            //minimum valid path /dbs\r",
-              "            if (!path || path.length < 4) {\r",
-              "                return null;\r",
-              "            }\r",
-              "\r",
-              "            //remove '/' from left and right of path\r",
-              "            path = path[0] == '/' ? path.substring(1) : path;\r",
-              "            path = path[path.length - 1] == '/' ? path.substring(0, path.length - 1) : path;\r",
-              "\r",
-              "            var pathSegments = (path && path.split(\"/\")) || [];\r",
-              "\r",
-              "            //if it's an incomplete path like /dbs/db1/colls/, start from the paretn resource\r",
-              "            var index = pathSegments.length % 2 === 0 ? pathSegments.length - 1 : pathSegments.length - 2;\r",
-              "            for (; index > 0; index -= 2) {\r",
-              "                var id = decodeURI(pathSegments[index]);\r",
-              "                if (resourceTokens[id]) {\r",
-              "                    return resourceTokens[id];\r",
-              "                }\r",
-              "            }\r",
-              "        }\r",
-              "        return null;\r",
-              "    }\r",
-              "\r",
-              "};\r",
-              "\r",
-              "if (typeof exports !== \"undefined\") {\r",
-              "    module.exports = AuthHandler;\r",
-              "}"
-            ]
-          }
-        }
-      ],
-      "_postman_id": "2938261-3a2e92f4-d6d2-409e-faa5-d382852aaaff",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": []
-        },
-        "url": "https://{{DocumentDBHost}}/dbs",
-        "description": "Get Collections\t"
-      },
-      "response": []
-    },
-    {
-      "name": "CreateNewDemoRequest",
-      "_postman_id": "2938261-b0290b9f-a189-470e-4254-ba2cd0d91937",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": []
-        },
-        "url": ""
-      },
-      "response": []
-    },
-    {
-      "name": "testAuthazure",
-      "_postman_id": "2938261-0bb21026-0d4f-7db0-8ab5-ea9ec3a134d3",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": []
-        },
-        "url": ""
-      },
-      "response": []
-    },
-    {
-      "name": "CreateNewDemoRequest",
-      "_postman_id": "2938261-ba685263-08e2-6199-4e28-8653fa958357",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "body": {
-          "mode": "formdata",
-          "formdata": []
-        },
-        "url": "",
-        "description": "Dummy Demio Request"
-      },
-      "response": []
-    }
-  ]
-}
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: LDH Dev Iteration one
+  description: First Iteration of adding ratings in the cosmos db
+  contact: {}
+host: DefaultParameterValue
+basePath: /
+schemes:
+- https
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /dbs:
+    get:
+      description: Get Collections	
+      summary: Get Databases
+      tags:
+      - Misc
+      operationId: GetDatabases
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+  /:
+    post:
+      summary: CreateNewDemoRequest
+      tags:
+      - Misc
+      operationId: CreateNewDemoRequest
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+    get:
+      summary: testAuthazure
+      tags:
+      - Misc
+      operationId: testAuthazure
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ''
+          headers: {}
+tags:
+- name: Misc
+  description: ''
